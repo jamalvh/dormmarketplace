@@ -36,7 +36,7 @@ void marketListings() {
     string blank;
     int spaceCount;
     string addSpace = "";
-    ifstream marketListings("marketListings");
+    ifstream marketListings("marketListings.txt");
     
     while (marketListings >> id) {
         spaceCount = 8;
