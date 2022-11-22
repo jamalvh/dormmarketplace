@@ -63,9 +63,20 @@ void defineListing(vector<string>& idPriceItem, string id, string email) {
 
 void updateFiles(string id, string price, string item, string email) {
     
-    //open market file
-    ofstream uploadMarket("marketListings", ios::app);
+    string blank;
+    ifstream checkMarket("marketListings.txt", ios::app);
     
+    //open market file
+    ofstream uploadMarket("marketListings.txt", ios::app);
+    
+    //check if first item
+    getline(checkMarket, blank);
+    
+    if (blank != "") {
+        uploadMarket << endl;
+    }
+    
+    //add item to market
     uploadMarket << id << " " << price << endl
                  << item << endl;
     uploadMarket.close();
