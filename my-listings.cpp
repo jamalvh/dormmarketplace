@@ -36,6 +36,7 @@ void viewMyListings(string email) {
     string price;
     string item;
     string blank;
+    string posterEmail;
     int spaceCount;
     string addSpace = "";
     ifstream myListings(email);
