@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void findProduct(string& id, string& price, string& item);
+void findProduct(string& id, string& price, string& item, string& posterEmail);
 void confirmPurchase(string id, string price, string item);
 void completePurchase(string id, string price, string item, string& email);
 void removeListing(string id, string price, string item, string& email);
@@ -22,8 +22,9 @@ void makePurchase(string email) {
     string id = "failed";
     string price = "failed";
     string item = "failed";
+    string posterEmail = "";
     makePurchaseHeader();
-    findProduct(id, price, item);
+    findProduct(id, price, item, posterEmail);
     completePurchase(id, price, item, email);
     returnToMain(email);
 }
@@ -35,8 +36,8 @@ void makePurchaseHeader() {
 }
 
 
-void purchase(string& id, string& price, string& item, string& email) {
-    findProduct(id, price, item);
+void purchase(string& id, string& price, string& item, string& email, string posterEmail) {
+    findProduct(id, price, item, posterEmail);
     
     if (price == "failed") {
         return;
@@ -45,7 +46,7 @@ void purchase(string& id, string& price, string& item, string& email) {
     completePurchase(id, price, item, email);
 }
 
-void findProduct(string& id, string& price, string& item) {
+void findProduct(string& id, string& price, string& item, string& posterEmail) {
 
     string idInput;
     cout << "Listing ID: ";
@@ -63,36 +64,43 @@ void findProduct(string& id, string& price, string& item) {
         marketListings >> price;
         getline(marketListings, blank);
         getline(marketListings, item);
+        getline(marketListings, posterEmail);
         
         listOfMarketListings.push_back(id);
         listOfMarketListings.push_back(price);
         listOfMarketListings.push_back(item);
+        listOfMarketListings.push_back(posterEmail);
+
          
     }
     id = "failed";
     price = "failed";
     item = "failed";
-    for (int i = 0; i < listOfMarketListings.size(); i++) {
+    
+    for (int i = 0; i < listOfMarketListings.size() - 3; i++) {
         if (listOfMarketListings.at(i) == idInput) {
             id = listOfMarketListings.at(i);
             price = listOfMarketListings.at(i+1);
             item = listOfMarketListings.at(i+2);
+            posterEmail = listOfMarketListings.at(i+3);
             
             i = static_cast<int>(listOfMarketListings.size());
         }
     }
-    //NEVER FAILS!
+
     while (price == "failed") {
         
         cout << "Item not found." << endl;
         cout << "Listing ID: "; 
         cin >> idInput;
         
-        for (int i = 0; i < listOfMarketListings.size(); i++) {
+        for (int i = 0; i < listOfMarketListings.size() - 3; i++) {
             if (listOfMarketListings.at(i) == idInput) {
                 id = listOfMarketListings.at(i);
                 price = listOfMarketListings.at(i+1);
                 item = listOfMarketListings.at(i+2);
+                posterEmail = listOfMarketListings.at(i+3);
+
                 
                 i = static_cast<int>(listOfMarketListings.size());
             }
@@ -139,7 +147,10 @@ void removeListing(string id, string price, string item, string& email) {
     string idTemp = "";
     string priceTemp = "";
     string itemTemp = "";
+    string posterEmailTemp = "";
     string blank = "";
+    
+    string posterEmail = "";
     
     ifstream downloadMarket("marketListings.txt");
     
@@ -148,46 +159,41 @@ void removeListing(string id, string price, string item, string& email) {
         downloadMarket >> priceTemp;
         getline(downloadMarket, blank);
         getline(downloadMarket, itemTemp);
+        getline(downloadMarket, posterEmailTemp);
+
         
         if (idTemp != id) {
         
             idPriceItemCopy.push_back(idTemp);
             idPriceItemCopy.push_back(priceTemp);
             idPriceItemCopy.push_back(itemTemp);
+            idPriceItemCopy.push_back(posterEmailTemp);
 
-        }
-    }
-    
-    cout << endl;
-    
-    for (int k = 0; k < idPriceItemCopy.size(); k++) {
-        
-        cout << idPriceItemCopy[k];
-        if (k % 2 == 0) {
-            cout << ", ";
+
         } else {
-            cout << " ";
+            
+            //save poster email to update Perosnal File later
+            posterEmail = posterEmailTemp;
         }
-        
     }
-    
-    cout << endl;
     
     downloadMarket.close();
 
     
     ofstream uploadNewMarket("marketListings.txt");
     
-    for (int i = 0; i < idPriceItemCopy.size(); i++) {
+    for (int i = 0; i < idPriceItemCopy.size() - 3; i++) {
         
         idTemp = idPriceItemCopy[i];
         i++;
         priceTemp = idPriceItemCopy[i];
         i++;
         itemTemp = idPriceItemCopy[i];
+        i++;
+        posterEmailTemp = idPriceItemCopy[i];
         
         uploadNewMarket << idTemp << " " << priceTemp << endl
-                     << itemTemp << endl;
+                        << itemTemp << endl << posterEmailTemp << endl;
     }
         
     uploadNewMarket.close();
@@ -200,10 +206,11 @@ void removeListing(string id, string price, string item, string& email) {
     string pIdTemp;
     string pPriceTemp;
     string pItemTemp;
+    string pPosterEmailTemp;
     string pBlank;
     string passwordTemp;
     
-    ifstream downloadPersonal("marketListings.txt");
+    ifstream downloadPersonal(posterEmail);
     
     downloadPersonal >> passwordTemp;
     getline(downloadPersonal, pBlank);
@@ -219,8 +226,31 @@ void removeListing(string id, string price, string item, string& email) {
             pIdPriceItemCopy.push_back(pPriceTemp);
             pIdPriceItemCopy.push_back(pItemTemp);
 
+
         }
     }
     
     downloadPersonal.close();
+
+    //open item-poster's email to edit Personal File
+    ofstream uploadNewPersonal(posterEmail);
+    
+    uploadNewPersonal << passwordTemp << endl << endl;
+    
+    if (pIdPriceItemCopy.size() > 0) {
+        
+        for (int j = 0; j < pIdPriceItemCopy.size() - 2; j++) {
+            pIdTemp = pIdPriceItemCopy[j];
+            j++;
+            pPriceTemp = pIdPriceItemCopy[j];
+            j++;
+            pItemTemp = pIdPriceItemCopy[j];
+            
+            uploadNewPersonal << pIdTemp << " " << pPriceTemp << endl
+                         << pItemTemp << endl;
+        }
+    }
+        
+    uploadNewPersonal.close();
+
 }
