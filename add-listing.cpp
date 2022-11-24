@@ -20,6 +20,7 @@ void updateFiles(string id, string price, string item, string email);
 
 void addListing(string email) {
     string id = "";
+    string posterEmail = "";
     vector<string> idPriceItem = {};
     addListingHeader();
     defineListing(idPriceItem, id, email);
@@ -57,28 +58,23 @@ void defineListing(vector<string>& idPriceItem, string id, string email) {
     idPriceItem.push_back(id);
     idPriceItem.push_back(price);
     idPriceItem.push_back(item);
+    idPriceItem.push_back(email);
+
     
     updateFiles(id, price, item, email);
 }
 
 void updateFiles(string id, string price, string item, string email) {
-    
+    //ofstream idPriceItem to market and personal
     string blank;
     ifstream checkMarket("marketListings.txt", ios::app);
     
     //open market file
     ofstream uploadMarket("marketListings.txt", ios::app);
     
-    //check if first item
-    getline(checkMarket, blank);
-    
-    if (blank != "") {
-        uploadMarket << endl;
-    }
-    
     //add item to market
     uploadMarket << id << " " << price << endl
-                 << item << endl;
+                 << item << endl << email << endl;
     uploadMarket.close();
     
     //open personal file
@@ -87,6 +83,6 @@ void updateFiles(string id, string price, string item, string email) {
     uploadPersonal << endl << id << " " << price << endl
                  << item;
     uploadPersonal.close();
-    //ofstream idPriceItem to market and personal
+
 }
 
