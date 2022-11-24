@@ -33,9 +33,11 @@ void marketListings() {
     string id;
     string price;
     string item;
+    string posterEmail;
     string blank;
     int spaceCount;
     string addSpace = "";
+    
     ifstream marketListings("marketListings.txt");
     
     while (marketListings >> id) {
@@ -44,6 +46,7 @@ void marketListings() {
         marketListings >> price;
         getline(marketListings, blank);
         getline(marketListings, item);
+        getline(marketListings, posterEmail);
         
         if (price.size() > 1) {
             spaceCount -= (price.size() - 1);
