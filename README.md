@@ -1,6 +1,6 @@
 # Account-based Trading Platform using C++ (Oct. - Nov. 2022)
 
-• Built a marketplace that allows dorm students to list and purchase second-hand products in a coherent and easy-to-navigate interface. 
+• Built a marketplace that allows dorm students to list and purchase second-hand products in a coherent command-line interface. 
 
 • Login and registration system secures user listings behind a password protected data-wall. 
 
